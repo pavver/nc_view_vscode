@@ -2,7 +2,7 @@
   "name": "nc-view",
   "displayName": "NC Viewer",
   "description": "Interactive 3D G-code viewer for VS Code",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "engines": {
     "vscode": "^1.103.0"
   },
@@ -54,32 +54,26 @@
     "commands": [
       {
         "command": "ncViewer.open",
-        "title": "Open NC Viewer"
+        "title": "Open NC Viewer",
+        "icon": "$(open-preview)"
       }
     ],
     "menus": {
-      "explorer/context": [
-        {
-          "when": "resourceExtname =~ /\\.(nc|gcode|cnc|NC|GCODE|CNC)$/",
-          "command": "ncViewer.open",
-          "group": "navigation"
-        }
-      ],
-      "editor/context": [
-        {
-          "when": "resourceExtname =~ /\\.(nc|gcode|cnc|NC|GCODE|CNC)$/",
-          "command": "ncViewer.open",
-          "group": "navigation"
-        }
-      ],
-      "editor/title/context": [
-        {
-          "when": "resourceExtname =~ /\\.(nc|gcode|cnc|NC|GCODE|CNC)$/",
-          "command": "ncViewer.open",
-          "group": "navigation"
-        }
+      "editor/title": [
+      {
+        "command": "ncViewer.open",
+        "when": "resourceLangId == gcode",
+        "group": "navigation"
+      }
       ]
     },
+    "keybindings": [
+      {
+        "command": "ncViewer.open",
+        "key": "ctrl+k v",
+        "when": "editorTextFocus && resourceLangId == gcode"
+      }
+    ],
     "languages": [
       {
         "id": "gcode",
