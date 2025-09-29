@@ -7,6 +7,17 @@ to structure this file.
 
 ## [Unreleased]
 
+## [0.0.6] - 2025-09-29
+
+### Added
+- **Zoom Level Display:** Added a "Zoom" display to the viewer info panel, showing the current camera zoom level.
+- **Rotation Center Visualization:** Implemented a visual sphere indicator for the camera's rotation center, visible during rotation.
+- **Theme-aware Rotation Center Color:** The rotation center sphere's color now adapts to the VS Code theme for better visibility.
+
+### Changed
+- **Camera Rotation Logic:** Improved camera rotation behavior. Now, when initiating rotation (middle mouse button), the center of rotation is automatically set to the point on the model currently in the center of the screen, providing a more intuitive experience. This also resolves previous conflicts with OrbitControls' internal panning logic.
+- **Zoom Limits:** Added constraints to the camera zoom, preventing it from going below 0.5 or above 10.
+
 ## [0.0.6] - 2025-09-28
 
 ### Added

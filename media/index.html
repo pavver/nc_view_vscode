@@ -100,6 +100,7 @@
         <span>X: <span id="posX">0.000</span></span>
         <span>Y: <span id="posY">0.000</span></span>
         <span>Z: <span id="posZ">0.000</span></span>
+        <span>Zoom: <span id="zoomLevel">1.00</span></span>
       </div>
       <input type="range" id="viewerSlider" min="0" max="100" value="0" step="1" />
     </div>
@@ -142,6 +143,12 @@
     endPointMesh.visible = false;
     scene.add(endPointMesh);
 
+    const rotationCenterGeometry = new THREE.SphereGeometry(1, 32, 32);
+    const rotationCenterMaterial = new THREE.MeshBasicMaterial({ color: 0xff00ff, transparent: true, opacity: 0.5 });
+    const rotationCenterSphere = new THREE.Mesh(rotationCenterGeometry, rotationCenterMaterial);
+    rotationCenterSphere.visible = false;
+    scene.add(rotationCenterSphere);
+
     const aspect = viewer.clientWidth / viewer.clientHeight;
     const f0 = 20000;
     const camera = new THREE.OrthographicCamera(
@@ -166,6 +173,8 @@
     };
     controls.screenSpacePanning = true;
     controls.zoomToCursor = true;
+    controls.minZoom = 0.5;
+    controls.maxZoom = 10;
 
     const gizmo = new ViewportGizmo(camera, renderer, {
       placement: "bottom-right",
@@ -212,9 +221,26 @@
       isMouseDown = true;
       mouseDownPosition.x = event.clientX;
       mouseDownPosition.y = event.clientY;
+
+      if (event.button === 1) { // Middle mouse for rotation
+        rotationCenterSphere.visible = true;
+        if (lineSegmentsMesh) {
+          const centralRaycaster = new THREE.Raycaster();
+          centralRaycaster.params.Line.threshold = size / 100 / camera.zoom;
+          centralRaycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
+
+          const intersects = centralRaycaster.intersectObject(lineSegmentsMesh, false);
+
+          if (intersects.length > 0) {
+            controls.target.copy(intersects[0].point);
+            controls.update();
+          }
+        }
+      }
     });
 
     renderer.domElement.addEventListener("mouseup", (event) => {
+      rotationCenterSphere.visible = false;
       if (!isMouseDown) return;
       isMouseDown = false;
 
@@ -555,6 +581,12 @@
         startPointMesh.scale.set(pointSize, pointSize, pointSize);
         endPointMesh.scale.set(pointSize, pointSize, pointSize);
       }
+      if (rotationCenterSphere.visible) {
+        rotationCenterSphere.position.copy(controls.target);
+        const sphereSize = (size / 150) / camera.zoom;
+        rotationCenterSphere.scale.set(sphereSize, sphereSize, sphereSize);
+      }
+      document.getElementById("zoomLevel").textContent = camera.zoom.toFixed(2);
       renderer.render(scene, camera);
       gizmo.render();
     }
@@ -590,6 +622,9 @@
 
       startPointMaterial.color.setHex(colors.feedColor);
       endPointMaterial.color.setHex(colors.rapidColor);
+
+      const sphereColor = getHexFromVar('--vscode-focusBorder', 0xff00ff);
+      rotationCenterMaterial.color.setHex(sphereColor);
 
       // Overwrite the renderer background
       const bgColor = computedStyles.getPropertyValue('--vscode-editor-background').trim();
