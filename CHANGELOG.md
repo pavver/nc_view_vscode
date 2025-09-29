@@ -7,6 +7,18 @@ to structure this file.
 
 ## [Unreleased]
 
+## [0.0.6] - 2025-09-28
+
+### Added
+- **Anti-aliasing:** anti-aliasing doesn't work very well, but it still seems better with it than without it.
+- **Using editor theme colors:** Colors from the vs code theme are used, colors are automatically reloaded when changing the theme.
+- **Ignoring commented lines:** Added ignoring commented code lines.
+- **Start and end point markers:** Added markers for the start and end of the selected line segment. The markers scale with zoom to improve visibility.
+
+### Fixed
+- **Zoom:** Now the zoom center is on the cursor, not in the center of the screen. Much more convenient.
+- **Camera:** The camera no longer moves after editing a file.
+
 ## [0.0.5] - 2025-09-27
 
 ### Added
